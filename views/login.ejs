@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chamados TI | Acesso</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #101827, #172d4b);
+            color: #172033;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .login-card {
+            background: #fff;
+            padding: 38px;
+            border-radius: 20px;
+            box-shadow: 0 24px 70px rgba(0,0,0,.25);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-icon {
+            width: 54px;
+            height: 54px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 15px;
+            border-radius: 16px;
+            background: #2563eb;
+            color: white;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        h1 {
+            font-size: 25px;
+            color: #172033;
+        }
+
+        .subtitle {
+            margin-top: 9px;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .formulario {
+            margin-top: 28px;
+        }
+
+        .campo {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dbe2ea;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        button:disabled {
+            opacity: .65;
+            cursor: wait;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-google {
+            background: white;
+            color: #334155;
+            border: 1px solid #dbe2ea;
+            margin-top: 14px;
+        }
+
+        .btn-google:hover {
+            background: #f8fafc;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 22px 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .switch {
+            margin-top: 23px;
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .switch button {
+            width: auto;
+            padding: 0;
+            color: #2563eb;
+            background: transparent;
+            font-size: 13px;
+        }
+
+        .switch button:hover {
+            text-decoration: underline;
+        }
+
+        #login-error {
+            margin-top: 16px;
+            color: #dc2626;
+            font-size: 13px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 27px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-container">
+        <section class="login-card">
+
+            <header class="brand">
+                <div class="brand-icon">H</div>
+                <h1>Chamados TI</h1>
+                <p class="subtitle" id="form-description">
+                    Entre para acessar o sistema de suporte.
+                </p>
+            </header>
+
+            <!-- FORMULÁRIO DE LOGIN -->
+            <form id="login-form" class="formulario">
+
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="seu@email.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="password">Senha</label>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Sua senha"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn-primary" id="login-submit">
+                    Entrar
+                </button>
+            </form>
+
+            <!-- FORMULÁRIO DE CADASTRO -->
+            <form id="register-form" class="formulario hidden">
+
+                <div class="campo">
+                    <label for="register-name">Nome completo</label>
+                    <input
+                        type="text"
+                        id="register-name"
+                        placeholder="Seu nome"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="register-email">E-mail</label>
+                    <input
+                        type="email"
+                        id="register-email"
+                        placeholder="seu@email.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="register-password">Senha</label>
+                    <input
+                        type="password"
+                        id="register-password"
+                        placeholder="Mínimo de 6 caracteres"
+                        minlength="6"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="register-confirm">Confirmar senha</label>
+                    <input
+                        type="password"
+                        id="register-confirm"
+                        placeholder="Digite a senha novamente"
+                        minlength="6"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn-primary" id="register-submit">
+                    Criar minha conta
+                </button>
+            </form>
+
+            <div id="login-options">
+                <div class="divider">OU</div>
+
+                <button type="button" id="google-login" class="btn-google">
+                    Entrar com Google
+                </button>
+            </div>
+
+            <p class="switch" id="login-switch">
+                Ainda não tem conta?
+                <button type="button" id="show-register">Criar conta</button>
+            </p>
+
+            <p class="switch hidden" id="register-switch">
+                Já tem uma conta?
+                <button type="button" id="show-login">Fazer login</button>
+            </p>
+
+            <p id="login-error" role="alert"></p>
+
+        </section>
+    </main>
+
+    <script type="module" src="/js/login.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,19 @@
+# Dependências
+node_modules/
+
+# Banco de dados local
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+
+# Arquivos de backup
+*.backup
+
+# Credenciais e configurações privadas
+.env
+.env.*
+!.env.example
+config/firebase/serviceAccountKey.json
+
+# Arquivos pessoais
+README.MD.Ana
