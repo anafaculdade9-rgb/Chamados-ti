@@ -160,17 +160,19 @@ Chamados-ti/
 
 ## Acesso para testes
 
-As credenciais de teste devem ser utilizadas para verificar os três perfis de acesso.
+As credenciais abaixo permitem testar os diferentes perfis de acesso da aplicação.
 
 | Perfil | E-mail | Senha |
 |---|---|---|
-| Usuário | PREENCHER APÓS VALIDAR | PREENCHER |
-| Técnico | PREENCHER APÓS VALIDAR | PREENCHER |
-| Administrador | PREENCHER APÓS VALIDAR | PREENCHER |
+| Usuário | teste3@gmail.com | 654321 |
+| Técnico | teste2@gmail.com | 123456 |
+| Administrador | teste@gmail.com | 12345678 |
+
+**Aplicação para testes:** [https://chamados-ti-2zhf.onrender.com](https://chamados-ti-2zhf.onrender.com)
 
 ## Testes realizados
 
-Os testes devem ser realizados na aplicação publicada:
+Os testes foram realizados na aplicação publicada:
 
 [https://chamados-ti-2zhf.onrender.com](https://chamados-ti-2zhf.onrender.com)
 
