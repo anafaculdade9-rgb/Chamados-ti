@@ -1,5 +1,11 @@
-
 const { auth, db } = require('../config/firebase/admin');
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  path: '/'
+};
 
 async function carregarUsuario(req, res, next) {
   try {
@@ -25,12 +31,32 @@ async function carregarUsuario(req, res, next) {
     const usuarioDoc = await usuarioRef.get();
 
     if (!usuarioDoc.exists) {
+      res.clearCookie('session', cookieOptions);
       req.usuario = null;
       res.locals.usuario = null;
       return next();
     }
 
-    req.usuario = usuarioDoc.data();
+    const dados = usuarioDoc.data();
+
+    const perfisValidos = ['user', 'tecnico', 'admin'];
+
+    if (
+      dados.uid !== decoded.uid ||
+      !perfisValidos.includes(dados.perfil)
+    ) {
+      res.clearCookie('session', cookieOptions);
+      req.usuario = null;
+      res.locals.usuario = null;
+      return next();
+    }
+
+    req.usuario = {
+      ...dados,
+      uid: decoded.uid,
+      email: decoded.email || dados.email
+    };
+
     res.locals.usuario = req.usuario;
 
     return next();
@@ -38,7 +64,7 @@ async function carregarUsuario(req, res, next) {
   } catch (error) {
     req.usuario = null;
     res.locals.usuario = null;
-    res.clearCookie('session');
+    res.clearCookie('session', cookieOptions);
     return next();
   }
 }
@@ -69,4 +95,3 @@ module.exports = {
   exigirLogin,
   permitirPerfis
 };
-

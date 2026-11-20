@@ -21,20 +21,70 @@
 
       <nav class="nav" aria-label="Navegação principal">
         <span class="nav-label">Geral</span>
-        <a href="/" id="nav-dashboard" class="nav-link <%= currentPath === '/' ? 'active' : '' %>"><%- icon('dashboard') %><span>Dashboard</span></a>
-        <a href="/tickets" id="nav-tickets" class="nav-link <%= currentPath.startsWith('/tickets') ? 'active' : '' %>"><%- icon('ticket') %><span>Chamados</span></a>
-        <span class="nav-label">Cadastros</span>
-        <a href="/technicians" id="nav-technicians" class="nav-link <%= currentPath.startsWith('/technicians') ? 'active' : '' %>"><%- icon('users') %><span>Técnicos</span></a>
-        <a href="/categories" id="nav-categories" class="nav-link <%= currentPath.startsWith('/categories') ? 'active' : '' %>"><%- icon('tag') %><span>Categorias</span></a>
+
+        <a href="/" id="nav-dashboard" class="nav-link <%= currentPath === '/' ? 'active' : '' %>">
+          <%- icon('dashboard') %><span>Dashboard</span>
+        </a>
+
+        <a href="/tickets" id="nav-tickets" class="nav-link <%= currentPath.startsWith('/tickets') ? 'active' : '' %>">
+          <%- icon('ticket') %><span>Chamados</span>
+        </a>
+
+        <a href="/tickets/new" id="sidebar-new-ticket" class="nav-link <%= currentPath === '/tickets/new' ? 'active' : '' %>">
+          <%- icon('plus') %><span>Novo chamado</span>
+        </a>
+
+        <% if (usuario && usuario.perfil === 'admin') { %>
+          <span class="nav-label">Administração</span>
+
+          <a href="/technicians" id="nav-technicians" class="nav-link <%= currentPath.startsWith('/technicians') ? 'active' : '' %>">
+            <%- icon('users') %><span>Técnicos</span>
+          </a>
+
+          <a href="/categories" id="nav-categories" class="nav-link <%= currentPath.startsWith('/categories') ? 'active' : '' %>">
+            <%- icon('tag') %><span>Categorias</span>
+          </a>
+         <a href="/users" id="nav-users" class="nav-link <%= currentPath.startsWith('/users') ? 'active' : '' %>">
+  <%- icon('users') %><span>Usuários</span>
+</a>
+        <% } %>
       </nav>
 
-      <a href="/tickets/new" class="btn btn-primary btn-block sidebar-cta" id="sidebar-new-ticket"><%- icon('plus') %> Novo chamado</a>
+      <% if (usuario) { %>
+        <div class="sidebar-user">
+          <div>
+            <strong><%= usuario.nome || usuario.email %></strong>
+            <span>
+              <%= usuario.perfil === 'admin'
+                ? 'Administrador'
+                : usuario.perfil === 'tecnico'
+                  ? 'Técnico'
+                  : 'Usuário' %>
+            </span>
+          </div>
+
+          <form method="POST" action="/logout">
+            <button type="submit" class="btn btn-secondary btn-block" id="logout-button">
+              Sair da conta
+            </button>
+          </form>
+        </div>
+      <% } %>
     </aside>
 
     <main class="main">
       <% if (msg) { %>
-        <div class="toast toast-success" role="status" data-toast><%- icon('check') %><span><%= msg %></span><button type="button" class="toast-close" aria-label="Fechar" data-toast-close><%- icon('x', 16) %></button></div>
+        <div class="toast toast-success" role="status" data-toast>
+          <%- icon('check') %>
+          <span><%= msg %></span>
+          <button type="button" class="toast-close" aria-label="Fechar" data-toast-close><%- icon('x', 16) %></button>
+        </div>
       <% } %>
+
       <% if (erro) { %>
-        <div class="toast toast-error" role="alert" data-toast><%- icon('alert') %><span><%= erro %></span><button type="button" class="toast-close" aria-label="Fechar" data-toast-close><%- icon('x', 16) %></button></div>
+        <div class="toast toast-error" role="alert" data-toast>
+          <%- icon('alert') %>
+          <span><%= erro %></span>
+          <button type="button" class="toast-close" aria-label="Fechar" data-toast-close><%- icon('x', 16) %></button>
+        </div>
       <% } %>

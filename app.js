@@ -4,7 +4,6 @@ const methodOverride = require('method-override');
 const { sequelize } = require('./models');
 const routes = require('./routes');
 const locals = require('./middlewares/locals');
-const seed = require('./seeders/seed');
 const { carregarUsuario } = require('./middlewares/auth');
 
 const app = express();
@@ -34,7 +33,6 @@ app.use((err, req, res, next) => {
 (async () => {
   try {
     await sequelize.sync();
-    await seed({ onlyIfEmpty: true });
 
     app.listen(PORT, () => {
       console.log(`\n HelpDesk TI rodando em http://localhost:${PORT}\n`);

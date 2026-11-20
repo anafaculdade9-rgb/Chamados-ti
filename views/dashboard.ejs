@@ -1,5 +1,50 @@
 <%- include('partials/header') %>
 
+
+<% if (usuario && usuario.perfil === 'user') { %>
+<header class="page-header">
+  <div>
+    <p class="eyebrow"><%= formatDate(new Date(), false) %></p>
+    <h1>Meus chamados</h1>
+    <p class="subtitle">Acompanhe o andamento das suas solicitações.</p>
+  </div>
+  <a href="/tickets/new" class="btn btn-primary" id="dash-new-ticket">
+    <%- icon('plus') %> Abrir chamado
+  </a>
+</header>
+
+<section class="stats" aria-label="Indicadores">
+  <a href="/tickets" class="stat-card stat-indigo">
+    <span class="stat-icon"><%- icon('inbox', 22) %></span>
+    <span class="stat-label">Total de chamados</span>
+    <span class="stat-value"><%= total %></span>
+    <span class="stat-foot">suas solicitações</span>
+  </a>
+
+  <a href="/tickets" class="stat-card stat-amber">
+    <span class="stat-icon"><%- icon('activity', 22) %></span>
+    <span class="stat-label">Em andamento</span>
+    <span class="stat-value"><%= ativos %></span>
+    <span class="stat-foot">aguardando conclusão</span>
+  </a>
+
+  <a href="/tickets" class="stat-card stat-green">
+    <span class="stat-icon"><%- icon('check', 22) %></span>
+    <span class="stat-label">Resolvidos</span>
+    <span class="stat-value"><%= porStatus.resolvido + porStatus.fechado %></span>
+    <span class="stat-foot">chamados concluídos</span>
+  </a>
+</section>
+
+<section class="card" aria-labelledby="h-recentes">
+  <div class="card-head">
+    <h2 id="h-recentes"><%- icon('clock') %> Meus chamados recentes</h2>
+    <a href="/tickets" class="link-muted">Ver todos</a>
+  </div>
+  <%- include('tickets/_table', { tickets: recentes }) %>
+</section>
+
+<% } else { %>
 <header class="page-header">
   <div>
     <p class="eyebrow"><%= formatDate(new Date(), false) %></p>
@@ -140,5 +185,8 @@
   </div>
   <%- include('tickets/_table', { tickets: recentes }) %>
 </section>
+
+
+<% } %>
 
 <%- include('partials/footer') %>

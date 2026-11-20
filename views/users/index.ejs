@@ -1,0 +1,67 @@
+<%- include('../partials/header') %>
+
+<section class="page-heading">
+  <div>
+    <span class="eyebrow">Administração</span>
+    <h1>Gerenciar usuários</h1>
+    <p>Consulte os usuários cadastrados e gerencie seus níveis de acesso.</p>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="cards-grid">
+    <% if (usuarios.length === 0) { %>
+      <article class="entity-card">
+        <p>Nenhum usuário cadastrado.</p>
+      </article>
+    <% } %>
+
+    <% usuarios.forEach((usuario) => { %>
+      <article class="entity-card">
+        <div class="entity-head">
+          <div class="avatar">
+            <%= (usuario.nome || usuario.email || 'U').charAt(0).toUpperCase() %>
+          </div>
+
+          <div>
+            <h2><%= usuario.nome || 'Nome não informado' %></h2>
+            <p><%= usuario.email || 'E-mail não informado' %></p>
+          </div>
+        </div>
+
+        <div class="entity-meta">
+          <span>UID: <%= usuario.uid %></span>
+          <span>Perfil atual: <strong><%= usuario.perfil || 'user' %></strong></span>
+        </div>
+
+        <form action="/users/<%= usuario.uid %>?_method=PUT" method="POST">
+          <label for="perfil-<%= usuario.uid %>">Alterar perfil</label>
+
+          <select
+            id="perfil-<%= usuario.uid %>"
+            name="perfil"
+            required
+          >
+            <option value="user" <%= usuario.perfil === 'user' ? 'selected' : '' %>>
+              Usuário
+            </option>
+
+            <option value="tecnico" <%= usuario.perfil === 'tecnico' ? 'selected' : '' %>>
+              Técnico
+            </option>
+
+            <option value="admin" <%= usuario.perfil === 'admin' ? 'selected' : '' %>>
+              Administrador
+            </option>
+          </select>
+
+          <button type="submit" class="btn btn-primary">
+            Salvar perfil
+          </button>
+        </form>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

@@ -1,29 +1,32 @@
-const {
-  initializeApp,
-  cert,
-  getApps
-} = require("firebase-admin/app");
+const admin = require('firebase-admin');
+const fs = require('fs');
+const path = require('path');
 
-const {
-  getFirestore
-} = require("firebase-admin/firestore");
+let serviceAccount;
 
-const {
-  getAuth
-} = require("firebase-admin/auth");
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} else {
+  const serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
 
-const serviceAccount = require("./serviceAccountKey.json");
+  if (fs.existsSync(serviceAccountPath)) {
+    serviceAccount = require(serviceAccountPath);
+  } else {
+    throw new Error('Credenciales del Firebase no encontradas.');
+  }
+}
 
-if (getApps().length === 0) {
-  initializeApp({
-    credential: cert(serviceAccount)
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
   });
 }
 
-const db = getFirestore();
-const auth = getAuth();
+const auth = admin.auth();
+const db = admin.firestore();
 
 module.exports = {
+  admin,
+  auth,
   db,
-  auth
 };

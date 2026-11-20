@@ -7,21 +7,35 @@ const Comment = sequelize.define(
     autor: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      validate: { notEmpty: { msg: 'Informe o autor do comentário.' } },
+      validate: {
+        notEmpty: {
+          msg: 'Informe o autor do comentário.'
+        }
+      },
     },
+
     mensagem: {
       type: DataTypes.TEXT,
       allowNull: false,
-      validate: { notEmpty: { msg: 'O comentário não pode ficar vazio.' } },
+      validate: {
+        notEmpty: {
+          msg: 'O comentário não pode ficar vazio.'
+        }
+      },
     },
-    // "comentario" = escrito por alguém | "sistema" = histórico automático
+
+    // comentario = mensagem comum
+    // parecer = parecer tecnico
+    // sistema = historico automatico
     tipo: {
-      type: DataTypes.ENUM('comentario', 'sistema'),
+      type: DataTypes.ENUM('comentario', 'parecer', 'sistema'),
       allowNull: false,
       defaultValue: 'comentario',
     },
   },
-  { tableName: 'comentarios' }
+  {
+    tableName: 'comentarios'
+  }
 );
 
 module.exports = Comment;

@@ -153,14 +153,14 @@ exports.new = async (req, res) => {
 exports.create = async (req, res) => {
   const data = pickTicket(req.body);
 
+  // A identidade do autor vem exclusivamente da sessão Firebase.
   data.uid = req.usuario.uid;
   data.solicitante = req.usuario.nome || req.usuario.email;
   data.emailSolicitante = req.usuario.email;
 
-  if (req.usuario.perfil === 'user') {
-    data.status = 'aberto';
-    data.technicianId = null;
-  }
+  // Todo chamado novo começa aberto e sem técnico responsável.
+  data.status = 'aberto';
+  data.technicianId = null;
 
   try {
     const ticket = await Ticket.create(data);
@@ -172,7 +172,7 @@ exports.create = async (req, res) => {
       mensagem: `Chamado aberto por ${ticket.solicitante}.`,
     });
 
-    res.redirect(
+    return res.redirect(
       `/tickets/${ticket.id}?msg=${encodeURIComponent(
         `Chamado ${ticket.protocolo} criado com sucesso!`
       )}`
@@ -181,7 +181,7 @@ exports.create = async (req, res) => {
     const errors = validationMessages(err);
     if (!errors) throw err;
 
-    res.status(422).render('tickets/form', {
+    return res.status(422).render('tickets/form', {
       title: 'Novo chamado',
       ticket: data,
       errors,
@@ -274,7 +274,11 @@ exports.update = async (req, res) => {
 
 // ATUALIZAÇÃO RÁPIDA
 exports.quickUpdate = async (req, res) => {
-  if (!isAdmin(req.usuario) && !isTecnico(req.usuario)) {
+  const usuario = req.usuario;
+  const admin = isAdmin(usuario);
+  const tecnico = isTecnico(usuario);
+
+  if (!admin && !tecnico) {
     return negarAcesso(res);
   }
 
@@ -284,15 +288,64 @@ exports.quickUpdate = async (req, res) => {
   const historico = [];
   const { status } = req.body;
 
-  if (status && STATUS[status] && status !== ticket.status) {
-    historico.push(
-      `Status alterado de "${STATUS[ticket.status].label}" para "${STATUS[status].label}".`
-    );
+  // Tecnicos podem usar somente os tres estados exigidos.
+  const estadosTecnico = ['aberto', 'em_andamento', 'resolvido'];
 
-    ticket.status = status;
+  if (status) {
+    if (!STATUS[status]) {
+      return res.redirect(
+        `/tickets/${ticket.id}?erro=${encodeURIComponent('Status inválido.')}`
+      );
+    }
+
+    if (tecnico && !estadosTecnico.includes(status)) {
+      return res.redirect(
+        `/tickets/${ticket.id}?erro=${encodeURIComponent('Você não pode utilizar esse status.')}`
+      );
+    }
+
+    if (status !== ticket.status) {
+      historico.push(
+        `Status alterado de "${STATUS[ticket.status].label}" para "${STATUS[status].label}".`
+      );
+
+      ticket.status = status;
+    }
   }
 
-  if (isAdmin(req.usuario)) {
+  // Tecnico pode assumir somente o proprio chamado.
+  if (tecnico && req.body.assumir === '1') {
+    const tecnicosAtivos = await Technician.findAll({
+      where: { ativo: true }
+    });
+
+    const tecnicoAtual = tecnicosAtivos.find(
+      t => t.email.toLowerCase() === (usuario.email || '').toLowerCase()
+    );
+
+    if (!tecnicoAtual) {
+      return res.redirect(
+        `/tickets/${ticket.id}?erro=${encodeURIComponent('Seu usuário não está vinculado a um técnico ativo.')}`
+      );
+    }
+
+    if (
+      ticket.technicianId &&
+      ticket.technicianId !== tecnicoAtual.id
+    ) {
+      return res.redirect(
+        `/tickets/${ticket.id}?erro=${encodeURIComponent('Este chamado já está atribuído a outro técnico.')}`
+      );
+    }
+
+    if (ticket.technicianId !== tecnicoAtual.id) {
+      ticket.technicianId = tecnicoAtual.id;
+      historico.push(`Chamado assumido por ${tecnicoAtual.nome}.`);
+    }
+  }
+
+  // Somente administrador pode alterar prioridade e atribuir outros tecnicos.
+  if (admin) {
     const { prioridade } = req.body;
 
     const technicianId = req.body.technicianId
@@ -341,15 +394,15 @@ exports.quickUpdate = async (req, res) => {
   await ticket.save();
 
   await Comment.bulkCreate(
-    historico.map((mensagem) => ({
+    historico.map(mensagem => ({
       ticketId: ticket.id,
       autor: 'Sistema',
       tipo: 'sistema',
-      mensagem,
+      mensagem
     }))
   );
 
-  res.redirect(
+  return res.redirect(
     `/tickets/${ticket.id}?msg=${encodeURIComponent('Chamado atualizado.')}`
   );
 };

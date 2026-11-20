@@ -7,7 +7,8 @@ import {
     signInWithPopup,
     createUserWithEmailAndPassword,
     updateProfile,
-    GoogleAuthProvider
+    GoogleAuthProvider,
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -23,6 +24,33 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+
+// Observa o estado de autenticação do Firebase.
+// O acesso só é confirmado quando o servidor reconhece a sessão.
+onAuthStateChanged(auth, async (usuario) => {
+    if (!usuario) {
+        return;
+    }
+
+    try {
+        const resposta = await fetch("/auth/session", {
+            method: "GET",
+            credentials: "same-origin"
+        });
+
+        if (!resposta.ok) {
+            return;
+        }
+
+        const sessao = await resposta.json();
+
+        if (sessao.authenticated) {
+            window.location.href = "/";
+        }
+    } catch (error) {
+        console.error("Erro ao verificar sessão:", error);
+    }
+});
 
 const loginForm = document.getElementById("login-form");
 const registerForm = document.getElementById("register-form");

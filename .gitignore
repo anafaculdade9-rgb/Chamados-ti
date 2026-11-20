@@ -17,3 +17,18 @@ config/firebase/serviceAccountKey.json
 
 # Arquivos pessoais
 README.MD.Ana
+
+# Backups compactados
+*.tar.gz
+*.tgz
+*.zip
+
+# Outras credenciais privadas
+*.pem
+*.key
+serviceAccountKey*.json
+*service-account*.json
+
+# Arquivos de log
+*.log
+database.sqlite*
